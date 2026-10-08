@@ -1,0 +1,149 @@
+================================================================================
+APEX DYNAMICS INC. - ENTERPRISE DOCUMENTATION SET
+================================================================================
+
+--------------------------------------------------------------------------------
+SECTION 1: UNSTRUCTURED ENTERPRISE DOCUMENTS (VECTOR SEARCH / RAG)
+--------------------------------------------------------------------------------
+
+[DOCUMENT 1]
+Document ID: POL-SEC-2025-v3
+Title: Information Security & Data Protection Policy
+
+1. Governance & Core Principles
+Apex Dynamics enforces a strict Zero-Trust Architecture across all digital environments. All company assets must be protected against unauthorized access, modification, or destruction. Employees must complete security awareness training annually and follow the principle of least privilege (PoLP) when accessing corporate systems.
+
+2. Access Control & Authentication
+- Multi-Factor Authentication (MFA): Mandatory for all system access, including VPN, email, and cloud infrastructure (AWS/GCP).
+- Password Policy: Minimum 16 characters, managed via an enterprise password manager. Passwords must not contain personal identifiers.
+- Role-Based Access Control (RBAC): Privileges are granted strictly according to active job roles and must be reviewed quarterly by department heads.
+
+3. Incident Response & Customer Complaint Escalation
+- Incidents: Security breaches must be reported immediately to security-incident@apexdynamics.com. Severity 1 incidents trigger an automatic lock on affected credentials within 15 minutes.
+- Customer Complaints Procedure: Customer complaints regarding data privacy, software glitches, or billing disputes are handled via the unified Escalation Framework:
+  1. Tier 1 (Support Desk): Acknowledged within 2 hours; resolved or escalated within 24 hours.
+  2. Tier 2 (Customer Success & Operations): Handled by assigned Account Managers; root cause analysis provided within 3 business days.
+  3. Tier 3 (Executive / Engineering): Critical security/privacy complaints are routed directly to the Chief Information Security Officer (CISO) and VP of Customer Success. Remedies include account credits or customized SLA remediation plans.
+
+
+[DOCUMENT 2]
+Document ID: SOP-ENG-042
+Title: Code Review, CI/CD, and Deployment Guidelines
+
+1. Overview
+To maintain high code quality and system stability, all software changes committed to Apex Dynamics codebases must undergo rigorous peer code review and pass automated integration testing.
+
+2. The Code Review Process
+- Pull Request (PR) Standard: Every task or bug fix must originate from a dedicated feature branch named feature/TICKET-DESCRIPTION or fix/TICKET-DESCRIPTION. PR titles must reference the associated JIRA ticket.
+- Reviewer Assignment: Every PR requires at least two approval votes from senior or peer developers within the specific module's domain before merging into main or release branches.
+- Review Checklist:
+  * Functionality: Meets requirements detailed in the JIRA specification.
+  * Security: No hardcoded secrets, exposed API keys, or SQL injection vectors.
+  * Test Coverage: New logic must include unit tests achieving a minimum of 80% coverage.
+  * Performance: Ensure database queries are indexed and execution time falls within sub-100ms targets.
+- Merging & CI/CD Pipeline: Once approvals are granted, PRs must be squash-merged into main. The automated CI/CD pipeline triggers regression test suites, static code analysis (SonarQube), and container security scanning.
+
+
+[DOCUMENT 3]
+Document ID: REP-HR-2025-Q3
+Title: Benchmark Analysis of Employee Engagement & HR Policies
+
+1. Employee Satisfaction Summary (Q3 2025)
+- Apex eNPS (Employee Net Promoter Score): +38 (Up 4 points year-over-year).
+- Overall Job Satisfaction Score: 7.8 / 10 (Industry Benchmark: 7.2 / 10).
+- Key Drivers of High Satisfaction: Generous remote-work stipends, flexible schedule core hours (10 AM - 3 PM), and an annual professional development allowance of $2,500.
+
+2. Areas for Improvement & Contributing HR Policies
+- Workload & Burnout Concerns: Engineering and Customer Support departments reported elevated overtime hours. Current policy HR-POL-212 (On-Call Rotation) lacks mandatory recovery rest days post-incidents, directly impacting department-specific satisfaction scores.
+- Parental Leave & Retention: Recent updates to HR-POL-105 expanded paid parental leave to 16 weeks, resulting in a 12% drop in voluntary turnover among mid-level staff.
+
+
+--------------------------------------------------------------------------------
+SECTION 2: STRUCTURED RELATIONAL SCHEMA & DATA (SQL ANALYTICS)
+--------------------------------------------------------------------------------
+
+-- Schema Definition (PostgreSQL / SQLite Compatible)
+
+CREATE TABLE sales_monthly (
+    period VARCHAR(7) PRIMARY KEY, -- 'YYYY-MM'
+    revenue DECIMAL(12, 2) NOT NULL,
+    new_customers INT NOT NULL,
+    churned_customers INT NOT NULL,
+    total_active_customers INT NOT NULL
+);
+
+CREATE TABLE regional_performance (
+    region VARCHAR(20) NOT NULL,
+    quarter VARCHAR(7) NOT NULL, -- 'YYYY-Q#'
+    revenue DECIMAL(12, 2) NOT NULL,
+    quota DECIMAL(12, 2) NOT NULL,
+    target_achievement_pct DECIMAL(5, 2) NOT NULL,
+    PRIMARY KEY (region, quarter)
+);
+
+CREATE TABLE customer_success_metrics (
+    customer_tier VARCHAR(20) PRIMARY KEY,
+    avg_csat DECIMAL(3, 2) NOT NULL, -- Scale 1.0 to 5.0
+    churn_rate_pct DECIMAL(5, 2) NOT NULL,
+    upsell_conversion_pct DECIMAL(5, 2) NOT NULL,
+    avg_resolution_hours DECIMAL(4, 1) NOT NULL
+);
+
+
+-- Sample Data Insertion
+
+INSERT INTO sales_monthly (period, revenue, new_customers, churned_customers, total_active_customers) VALUES
+('2025-07', 1250000.00, 140, 22, 1118),
+('2025-08', 1310000.00, 155, 18, 1255),
+('2025-09', 1280000.00, 130, 25, 1360),
+('2025-10', 1420000.00, 180, 19, 1521),
+('2025-11', 1490000.00, 195, 21, 1695),
+('2025-12', 1650000.00, 210, 15, 1890);
+
+INSERT INTO regional_performance (region, quarter, revenue, quota, target_achievement_pct) VALUES
+('North America', '2025-Q4', 2160000.00, 2000000.00, 108.00),
+('Europe',        '2025-Q4', 1420000.00, 1500000.00,  94.67),
+('Asia-Pacific',  '2025-Q4',  980000.00,  850000.00, 115.29),
+('Latin America', '2025-Q4',  380000.00,  500000.00,  76.00);
+
+INSERT INTO customer_success_metrics (customer_tier, avg_csat, churn_rate_pct, upsell_conversion_pct, avg_resolution_hours) VALUES
+('Enterprise',  4.8, 1.20, 34.50,  4.2),
+('Mid-Market',  4.3, 2.80, 21.00, 12.5),
+('SMB',         3.7, 5.40,  9.20, 28.0);
+
+
+--------------------------------------------------------------------------------
+SECTION 3: QUERY ANSWER VERIFICATION MATRIX
+--------------------------------------------------------------------------------
+
+1. QUALITATIVE: What is our company's security policy?
+   - Source: POL-SEC-2025-v3
+   - Answer Key: Zero-Trust Architecture, mandatory MFA, password rules (min 16 chars), quarterly RBAC reviews, and immediate breach reporting.
+
+2. QUALITATIVE: Explain the code review process
+   - Source: SOP-ENG-042
+   - Answer Key: Feature branch naming conventions, minimum two senior approval votes on PRs, checks for security/coverage (80%+), and automated CI/CD squash-merges into main.
+
+3. QUALITATIVE: How do we handle customer complaints?
+   - Source: POL-SEC-2025-v3 (Section 3)
+   - Answer Key: 3-tier escalation framework: Tier 1 (2-hr response), Tier 2 (Account Manager RCA in 3 days), Tier 3 (CISO/VP routing for critical security/privacy disputes).
+
+4. QUANTITATIVE: Show me monthly revenue trends
+   - Source Query: SELECT period, revenue FROM sales_monthly ORDER BY period ASC;
+   - Answer Key: Steady increase from $1.25M (July) to $1.65M (December).
+
+5. QUANTITATIVE: What is our customer churn rate?
+   - Source Query: SELECT period, (churned_customers::float / total_active_customers) * 100 AS monthly_churn_rate_pct FROM sales_monthly; OR SELECT * FROM customer_success_metrics;
+   - Answer Key: Overall monthly churn hovers between 0.8% and 2.0%. By tier: 1.2% (Enterprise), 2.8% (Mid-Market), 5.4% (SMB).
+
+6. QUANTITATIVE: Compare Q4 performance across regions
+   - Source Query: SELECT * FROM regional_performance WHERE quarter = '2025-Q4' ORDER BY target_achievement_pct DESC;
+   - Answer Key: APAC (115.29% / $980K), NA (108.00% / $2.16M), EMEA (94.67% / $1.42M), LATAM (76.00% / $380K).
+
+7. COMPLEX MULTI-AGENT: How does our employee satisfaction compare to industry standards and what policies might impact this?
+   - Source: RAG on REP-HR-2025-Q3
+   - Answer Key: Apex score (7.8/10) exceeds industry benchmark (7.2/10). Positive impact from stipend/parental leave policies (HR-POL-105); negative impact on on-call engineers from HR-POL-212.
+
+8. COMPLEX MULTI-AGENT: Analyse our sales performance and recommend policy changes based on our customer success strategies
+   - Source: SQL (sales_monthly, customer_success_metrics) + RAG (POL-SEC-2025-v3)
+   - Answer Key: Revenue expanded by 32% over 6 months, driven primarily by Enterprise expansion. SMB churn is high (5.4%) due to slow resolution times (28 hrs). Recommendation: Update Escalation Policy to give SMBs automated self-service and reallocate Tier 1 support.
