@@ -1,0 +1,2 @@
+{"timestamp": "2026-10-09T11:06:40.395480", "query": "What is our company's security policy?", "agent": "manager-classifier", "input_tokens": 87, "output_tokens": 2, "cost_usd": 0.000291, "cost_per_1000_queries": 0.29}
+{"timestamp": "2026-10-09T11:06:52.597788", "query": "What is our company's security policy?", "agent": "qualitative", "input_tokens": 2772, "output_tokens": 294, "cost_usd": 0.012726, "cost_per_1000_queries": 12.73}
